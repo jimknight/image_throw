@@ -22,3 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 image_throw-*.tar
 
+config/*.secret.exs
+.DS_Store
