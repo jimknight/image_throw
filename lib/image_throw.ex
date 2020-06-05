@@ -2,6 +2,14 @@ defmodule ImageThrow do
   require Logger
   alias ImageThrow.Mqtt
 
+  def delete_old_images(path) do
+    all_image_paths = Path.wildcard("#{path}/*.jpg")
+
+    for image_path <- all_image_paths do
+      File.rm!(image_path)
+    end
+  end
+
   def get_latest_image(path) do
     Path.wildcard("#{path}/*.jpg") |> Enum.at(-1)
   end

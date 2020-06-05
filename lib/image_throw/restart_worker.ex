@@ -36,7 +36,7 @@ defmodule ImageThrow.RestartWorker do
         password: Application.get_env(:image_throw, :mqtt_pwd)
       )
 
-      DynamicSupervisor.start_child(Worker, %{user_id: 1})
+      DynamicSupervisor.start_child(Worker, %{camera_id: 1, user_id: 1})
     end
 
     {:noreply, state}

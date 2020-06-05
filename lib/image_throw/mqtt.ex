@@ -3,10 +3,6 @@ defmodule ImageThrow.Mqtt do
 
   def publish(client_id, topic, payload, options \\ []) do
     case Application.get_env(:image_throw, :env) do
-      :dev ->
-        Logger.debug("Skip publishing topic #{topic} to mqtt with payload #{payload} for DEV")
-        :ok
-
       :test ->
         Logger.info("Skip publishing topic #{topic} to mqtt with payload #{payload} for TEST")
 

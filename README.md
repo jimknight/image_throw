@@ -1,4 +1,5 @@
 # ImageThrow
 
 ## Todo
-* Monitor a folder
+* Delete old images
+* Deploy to jetson

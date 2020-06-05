@@ -18,6 +18,36 @@ defmodule ImageThrow.Worker do
   #  Server functions
   #############################################################################
   def handle_continue(:init, state) do
+    Process.send_after(self(), :get_latest_image, 500)
+    Process.send_after(self(), :delete_old_images, 5 * 60 * 1000)
+    {:noreply, state}
+  end
+
+  def handle_info(:delete_old_images, state) do
+    path = "/Users/jimknight/f/ffmpeg/images"
+    Logger.info("Delete old images from #{path}")
+    ImageThrow.delete_old_images(path)
+    Process.send_after(self(), :delete_old_images, 5 * 60 * 1000)
+    {:noreply, state}
+  end
+
+  @doc """
+  Wait 1 minute if no images found before retry. Otherwise 2x/second
+  """
+  def handle_info(:get_latest_image, state) do
+    path = "/Users/jimknight/f/ffmpeg/images"
+    Logger.info("Get latest image from #{path}")
+
+    case ImageThrow.get_latest_image(path) do
+      nil ->
+        Logger.info("No images found")
+        Process.send_after(self(), :get_latest_image, 60 * 1000)
+
+      image_path ->
+        ImageThrow.push_image_to_mqtt_server(image_path, state.camera_id, state.user_id)
+        Process.send_after(self(), :get_latest_image, 500)
+    end
+
     {:noreply, state}
   end
 
