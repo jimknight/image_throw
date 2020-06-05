@@ -1,4 +1,4 @@
 # ImageThrow
 
 ## Todo
-* Create a worker
+* Monitor a folder
