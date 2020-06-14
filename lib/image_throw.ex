@@ -11,7 +11,11 @@ defmodule ImageThrow do
   end
 
   def get_latest_image(path) do
-    Path.wildcard("#{path}/*.jpg") |> Enum.max()
+    case Path.wildcard("#{path}/*.jpg") do
+      nil -> nil
+      [] -> nil
+      image_paths -> image_paths |> Enum.max()
+    end
   end
 
   def push_image_to_mqtt_server(image_path, camera_id, user_id) do
