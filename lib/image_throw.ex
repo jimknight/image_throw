@@ -11,7 +11,7 @@ defmodule ImageThrow do
   end
 
   def get_latest_image(path) do
-    Path.wildcard("#{path}/*.jpg") |> Enum.at(-1)
+    Path.wildcard("#{path}/*.jpg") |> Enum.max()
   end
 
   def push_image_to_mqtt_server(image_path, camera_id, user_id) do
@@ -19,7 +19,7 @@ defmodule ImageThrow do
       {:ok, bin} ->
         client_id = Application.get_env(:image_throw, :mqtt_client_id)
         topic = "users/#{user_id}/camera/#{camera_id}/image"
-        Mqtt.publish(client_id, topic, bin, retain: true)
+        Mqtt.publish(client_id, topic, bin)
 
       {:error, reason} ->
         Logger.error("Error reading #{image_path}: #{inspect(reason)}")

@@ -24,3 +24,4 @@ image_throw-*.tar
 
 config/*.secret.exs
 .DS_Store
+rel/

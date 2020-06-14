@@ -3,14 +3,14 @@ defmodule ImageThrowTest do
   doctest ImageThrow
 
   test "delete_old_images(path)" do
-    path = "/Users/jimknight/f/ffmpeg/images"
+    path = Application.get_env(:image_throw, :data_dir)
     ImageThrow.delete_old_images(path)
     [latest_image_path] = Path.wildcard("#{path}/*.jpg")
     refute latest_image_path == ""
   end
 
   test "get_latest_image" do
-    path = "/Users/jimknight/f/ffmpeg/images"
+    path = Application.get_env(:image_throw, :data_dir)
     refute ImageThrow.get_latest_image(path) == nil
   end
 
