@@ -4,8 +4,9 @@ defmodule ImageThrow do
 
   def delete_old_images(path) do
     all_image_paths = Path.wildcard("#{path}/*.jpg")
+    last_image = all_image_paths |> Enum.max()
 
-    for image_path <- all_image_paths do
+    for image_path <- Enum.drop(all_image_paths, last_image) do
       File.rm!(image_path)
     end
   end
