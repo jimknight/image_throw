@@ -19,7 +19,7 @@ defmodule ImageThrow.Worker do
   #############################################################################
   def handle_continue(:init, state) do
     Process.send_after(self(), :get_latest_image, 1000)
-    Process.send_after(self(), :delete_old_images, 5 * 60 * 1000)
+    Process.send_after(self(), :delete_old_images, 1 * 60 * 1000)
     {:noreply, state}
   end
 
@@ -27,7 +27,7 @@ defmodule ImageThrow.Worker do
     path = Application.get_env(:image_throw, :data_dir)
     Logger.info("Delete old images from #{path}")
     ImageThrow.delete_old_images(path)
-    Process.send_after(self(), :delete_old_images, 5 * 60 * 1000)
+    Process.send_after(self(), :delete_old_images, 1 * 60 * 1000)
     {:noreply, state}
   end
 

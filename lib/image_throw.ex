@@ -3,11 +3,13 @@ defmodule ImageThrow do
   alias ImageThrow.Mqtt
 
   def delete_old_images(path) do
+    Logger.info("Starting delete_old_images for #{path}")
     all_image_paths = Path.wildcard("#{path}/*.jpg")
     last_image = all_image_paths |> Enum.max()
 
-    for image_path <- Enum.drop(all_image_paths, last_image) do
-      File.rm!(image_path)
+    for image_path <- Enum.drop_while(all_image_paths, fn x -> x == last_image end) do
+      x = File.rm!(image_path)
+      Logger.info("Reponse to deleting #{image_path} = #{inspect(x)}")
     end
   end
 
