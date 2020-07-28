@@ -9,7 +9,7 @@ defmodule ImageThrow.Mqtt do
         :ok
 
       _ ->
-        Logger.debug("Publish topic #{topic} to mqtt with payload #{payload}")
+        Logger.debug("Publish topic #{topic}")
         Tortoise.publish(client_id, topic, payload, options)
     end
   end

@@ -40,10 +40,11 @@ defmodule ImageThrow.Worker do
 
     case ImageThrow.get_latest_image(path) do
       nil ->
-        Logger.info("No images found")
+        Logger.info("No images found from #{path}")
         Process.send_after(self(), :get_latest_image, 60 * 1000)
 
       image_path ->
+        Logger.info("Send image #{image_path} to mqtt server")
         ImageThrow.push_image_to_mqtt_server(image_path, state.camera_id, state.user_id)
         Process.send_after(self(), :get_latest_image, 1000)
     end
