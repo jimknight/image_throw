@@ -2,14 +2,34 @@ defmodule ImageThrow do
   require Logger
   alias ImageThrow.Mqtt
 
+  @doc """
+  Delete the oldest image (lowest alpha number) but if 1 left, retain it
+  """
+  def delete_oldest_image(path) do
+    case Path.wildcard("#{path}/*.jpg") do
+      nil ->
+        nil
+
+      [] ->
+        nil
+
+      image_paths ->
+        if Enum.count(image_paths) > 1 do
+          image_paths |> Enum.min() |> File.rm!()
+        end
+    end
+  end
+
   def delete_old_images(path) do
     Logger.info("Starting delete_old_images for #{path}")
     all_image_paths = Path.wildcard("#{path}/*.jpg")
     last_image = all_image_paths |> Enum.max()
 
-    for image_path <- Enum.drop_while(all_image_paths, fn x -> x == last_image end) do
-      x = File.rm!(image_path)
-      Logger.info("Reponse to deleting #{image_path} = #{inspect(x)}")
+    if Enum.count(all_image_paths) > 1 do
+      for image_path <- Enum.drop_while(all_image_paths, fn x -> x == last_image end) do
+        x = File.rm!(image_path)
+        Logger.info("Reponse to deleting #{image_path} = #{inspect(x)}")
+      end
     end
   end
 

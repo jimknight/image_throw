@@ -19,21 +19,18 @@ defmodule ImageThrow.Worker do
   #############################################################################
   def handle_continue(:init, state) do
     Process.send_after(self(), :get_latest_image, 1000)
-    Process.send_after(self(), :delete_old_images, 1 * 60 * 1000)
+    Process.send_after(self(), :delete_oldest_image, 1000)
     {:noreply, state}
   end
 
-  def handle_info(:delete_old_images, state) do
+  def handle_info(:delete_oldest_image, state) do
     path = Application.get_env(:image_throw, :data_dir)
     Logger.info("Delete old images from #{path}")
-    ImageThrow.delete_old_images(path)
-    Process.send_after(self(), :delete_old_images, 1 * 60 * 1000)
+    ImageThrow.delete_oldest_image(path)
+    Process.send_after(self(), :delete_oldest_image, 1000)
     {:noreply, state}
   end
 
-  @doc """
-  Wait 1 minute if no images found before retry.
-  """
   def handle_info(:get_latest_image, state) do
     path = Application.get_env(:image_throw, :data_dir)
     Logger.info("Get latest image from #{path}")
@@ -41,7 +38,7 @@ defmodule ImageThrow.Worker do
     case ImageThrow.get_latest_image(path) do
       nil ->
         Logger.info("No images found from #{path}")
-        Process.send_after(self(), :get_latest_image, 60 * 1000)
+        Process.send_after(self(), :get_latest_image, 1000)
 
       image_path ->
         Logger.info("Send image #{image_path} to mqtt server")
